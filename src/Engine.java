@@ -15,6 +15,7 @@ public class Engine {
 
     static void clearScreen() {
         System.out.print("\033[2J");
+        System.out.print("\033[H");
     }
     
     static void resetCursor() {
@@ -23,7 +24,7 @@ public class Engine {
 }
 
 class Constants {
-    final int HEIGHT = 32, WIDTH = 55;
+    final int HEIGHT = 32, WIDTH = 70;
 
     final char[] RAMP = ".,-~:;=!*#$@".toCharArray();
 

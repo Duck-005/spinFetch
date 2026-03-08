@@ -23,6 +23,8 @@ public class Layout {
 
         for (int y = 0; y < height; y++) {
 
+            int rowStart = frame.length();
+
             if (y < torusFrame.length) {
                 int torusRowLen = torusFrame[y].length;
                 for (int x = 0; x < torusWidth; x++) {
@@ -37,6 +39,13 @@ public class Layout {
             if (y >= offset && y < offset + infoLines.size()) {
                 String line = infoLines.get(y - offset);
                 frame.append(line, 0, Math.min(line.length(), infoWidth));
+            }
+
+            // pad remaining width
+            int rowLen = frame.length() - rowStart;
+            while (rowLen < width) {
+                frame.append(' ');
+                rowLen++;
             }
 
             frame.append('\n');

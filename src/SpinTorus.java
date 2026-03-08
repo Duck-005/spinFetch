@@ -29,6 +29,11 @@ class Torus extends SceneObject {
 public class SpinTorus {
     public static void main(String[] args) {
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.print("\033[?25h");   // show cursor again
+            System.out.print("\033[0m");     // reset terminal colors
+        }));
+
         Engine engine = new Engine();
         Rotation rotation = new Rotation();
         Constants constants = new Constants();
@@ -50,7 +55,9 @@ public class SpinTorus {
         List<String> INFO = new SystemInfo().getInfo();
 
         engine.clearScreen();
-        while(true) {            
+        System.out.print("\033[?25l");
+
+        while(true) {           
             for (int i = 0; i < HEIGHT; i++) {
                 Arrays.fill(zbuffer[i], 0);
                 Arrays.fill(screen[i], ' ');
@@ -106,7 +113,7 @@ public class SpinTorus {
 
                 engine.resetCursor();
 
-                System.out.println(frame);
+                System.out.print(frame);
 
                 Thread.sleep(30);
             } catch (Exception e) {
