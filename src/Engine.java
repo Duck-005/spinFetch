@@ -25,11 +25,11 @@ public class Engine {
 }
 
 class Constants {
-    final int height = 32, width = 80;
+    final int HEIGHT = 32, WIDTH = 55;
 
-    final char[] ramp = ".,-~:;=!*#$@".toCharArray();
+    final char[] RAMP = ".,-~:;=!*#$@".toCharArray();
 
-    final Vector light = new Vector(0, 1, -1).normalize();
+    final Vector LIGHT = new Vector(0, 1, -1).normalize();
 
     int K1 = 15, K2 = 30;
 }
