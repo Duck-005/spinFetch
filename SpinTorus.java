@@ -1,17 +1,6 @@
+package spinDaWheel;
+
 import java.util.*;
-
-abstract class SceneObject {
-
-}
-
-class Vector {
-    double x, y, z;
-    Vector(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-}
 
 class Torus extends SceneObject {
     double R, r;
@@ -37,83 +26,26 @@ class Torus extends SceneObject {
     }
 }
 
-public class spin {
-    Vector rotateX(Vector v, double A) {
-        double x = v.x;
-        double y = v.y * Math.cos(Math.toRadians(A)) - v.z * Math.sin(Math.toRadians(A));
-        double z = v.y * Math.sin(Math.toRadians(A)) + v.z * Math.cos(Math.toRadians(A));
-
-        return new Vector(x, y, z);
-    }
-
-    Vector rotateZ(Vector v, double A) {
-        double x = v.x * Math.cos(Math.toRadians(A)) - v.y * Math.sin(Math.toRadians(A));
-        double y = v.x * Math.sin(Math.toRadians(A)) + v.y * Math.cos(Math.toRadians(A));
-        double z = v.z;
-
-        return new Vector(x, y, z);
-    }
-
-    Vector rotateY(Vector v, double A) {
-        double x = v.x * Math.cos(Math.toRadians(A)) + v.z * Math.sin(Math.toRadians(A));
-        double y = v.y;
-        double z = - v.x * Math.sin(Math.toRadians(A)) + v.z * Math.cos(Math.toRadians(A));
-
-        return new Vector(x, y, z);
-    }
-
-    void printScreen(char[][] screen) {
-
-        StringBuilder frame = new StringBuilder();
-    
-        for(int i = 0; i < screen.length; i++) {
-            for(int j = 0; j < screen[0].length; j++) {
-                frame.append(screen[i][j]);
-            }
-            frame.append('\n');
-        }
-    
-        System.out.print(frame.toString());
-    }
-
-    Vector normalize(Vector v) {
-        double magnitude = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-        return new Vector(v.x / magnitude, v.y / magnitude, v.z / magnitude);
-    }
-
-    double dot(Vector v1, Vector v2) {
-        double x = v1.x * v2.x;
-        double y = v1.y * v2.y;
-        double z = v1.z * v2.z;
-
-        return x + y + z;
-    }
-
-    static void clearScreen() {
-        System.out.print("\033[2J");
-    }
-    
-    static void resetCursor() {
-        System.out.print("\033[H");
-    }
-
+public class SpinTorus {
     public static void main(String[] args) {
-        spin engine = new spin();
+
+        Engine engine = new Engine();
+        Rotation rotation = new Rotation();
+        Constants constants = new Constants();
 
         Torus torus = new Torus(20, 5);
-        int K1 = 15, K2 = 30;
-
-        int height = 32, width = 80;
-
-        char[] ramp = ".,-~:;=!*#$@".toCharArray();
-        Vector light = engine.normalize(new Vector(0, 1, -1));
+        
+        int height = constants.height, width = constants.width;
+        char[] ramp = constants.ramp;
+        int K1 = constants.K1, K2 = constants.K2;
+        Vector light = constants.light;
 
         double[][] zbuffer = new double[height][width];
         char[][] screen = new char[height][width];
 
         double rx = 20, rz = 0, ry = 30;
 
-        clearScreen();
+        engine.clearScreen();
         while(true) {            
             for (int i = 0; i < height; i++) {
                 Arrays.fill(zbuffer[i], 0);
@@ -128,17 +60,19 @@ public class spin {
                 for(double phi = 0; phi < 360; phi += 5) {
 
                     Vector point = torus.surfacePoint(theta, phi);
-                    point = engine.rotateX(point, rx);
-                    point = engine.rotateZ(point, rz);
-                    point = engine.rotateY(point, ry);
+
+                    point = rotation.rotateX(point, rx);
+                    point = rotation.rotateZ(point, rz);
+                    point = rotation.rotateY(point, ry);
     
                     Vector normal = torus.calculateNormals(theta, phi);
-                    normal = engine.normalize(normal);
-                    normal = engine.rotateX(normal, rx);
-                    normal = engine.rotateZ(normal, rz);
-                    normal = engine.rotateY(normal, ry);
+                    normal = normal.normalize();
+                    
+                    normal = rotation.rotateX(normal, rx);
+                    normal = rotation.rotateZ(normal, rz);
+                    normal = rotation.rotateY(normal, ry);
     
-                    double brightness = engine.dot(normal, light);
+                    double brightness = normal.dot(light);
                     brightness = Math.max(0, Math.min(1, brightness));
     
                     double index = brightness * (ramp.length - 1);
@@ -163,7 +97,7 @@ public class spin {
             }
             
             try {
-                resetCursor();
+                engine.resetCursor();
                 engine.printScreen(screen);
 
                 Thread.sleep(50);
