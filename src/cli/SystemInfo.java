@@ -42,54 +42,81 @@ public class SystemInfo {
         }
     }
 
-    static String getUptime() {
-        try {
+    static String getUptime(String os) {
+        if(os.contains("win")) {
+            try {
 
-            ProcessBuilder pb = new ProcessBuilder(
-                "powershell",
-                "-command",
-                "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime"
-            );
+                ProcessBuilder pb = new ProcessBuilder(
+                    "powershell",
+                    "-command",
+                    "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime"
+                );
 
-            pb.redirectErrorStream(true);
+                pb.redirectErrorStream(true);
 
-            Process p = pb.start();
-            p.waitFor();
+                Process p = pb.start();
+                p.waitFor();
 
-            String output = new String(p.getInputStream().readAllBytes());
+                String output = new String(p.getInputStream().readAllBytes());
 
-            String boot = output.lines()
-                .map(String::trim)
-                .filter(l -> !l.isEmpty())
-                .findFirst()
-                .orElse(null);
+                String boot = output.lines()
+                    .map(String::trim)
+                    .filter(l -> !l.isEmpty())
+                    .findFirst()
+                    .orElse(null);
 
-            if (boot == null)
+                if (boot == null)
+                    return "Unknown uptime";
+
+                DateTimeFormatter fmt =
+                    DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a", Locale.ENGLISH);
+
+                LocalDateTime bootTime = LocalDateTime.parse(boot, fmt);
+
+                long seconds = ChronoUnit.SECONDS.between(
+                    bootTime,
+                    LocalDateTime.now()
+                );
+
+                long days = seconds / 86400;
+                seconds %= 86400;
+
+                long hours = seconds / 3600;
+                seconds %= 3600;
+
+                long minutes = seconds / 60;
+
+                return "Uptime: " + days + "d " + hours + "h " + minutes + "m";
+
+                } catch (Exception e) {
+                return "Unknown uptime: " + e.getMessage();
+            }
+        } else if(os.contains("mac")) {
+
+        } else {
+            try {
+
+                String content = Files.readString(Path.of("/proc/uptime"));
+
+                String uptimeSecondsStr = content.split(" ")[0];
+
+                long seconds = (long) Double.parseDouble(uptimeSecondsStr);
+
+                long days = seconds / 86400;
+                seconds %= 86400;
+
+                long hours = seconds / 3600;
+                seconds %= 3600;
+
+                long minutes = seconds / 60;
+
+                return days + "d " + hours + "h " + minutes + "m";
+
+            } catch (Exception e) {
                 return "Unknown uptime";
-
-            DateTimeFormatter fmt =
-                DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm:ss a", Locale.ENGLISH);
-
-            LocalDateTime bootTime = LocalDateTime.parse(boot, fmt);
-
-            long seconds = ChronoUnit.SECONDS.between(
-                bootTime,
-                LocalDateTime.now()
-            );
-
-            long days = seconds / 86400;
-            seconds %= 86400;
-
-            long hours = seconds / 3600;
-            seconds %= 3600;
-
-            long minutes = seconds / 60;
-
-            return "Uptime: " + days + "d " + hours + "h " + minutes + "m";
-
-        } catch (Exception e) {
-            return "Unknown uptime: " + e.getMessage();
-        }
+            }
+        } 
+        return "Unknown uptime";
     }
 
     static String getCPU(String os) {
@@ -173,12 +200,10 @@ public class SystemInfo {
         info.add(getUser());
         info.add(getOS());
         info.add(getKernel(os));
-        info.add(getUptime());
+        info.add(getUptime(os));
         info.add(getCPU(os));
         info.add(getRAMUsage());
         info.add(getCPUUsage());
-
-        for(String c: info) System.out.println(c);
 
         return info;
     }

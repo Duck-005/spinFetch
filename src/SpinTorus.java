@@ -107,7 +107,6 @@ public class SpinTorus {
                 engine.resetCursor();
 
                 System.out.println(frame);
-                // engine.printScreen(screen);
 
                 Thread.sleep(30);
             } catch (Exception e) {
