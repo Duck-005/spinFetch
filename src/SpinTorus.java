@@ -1,6 +1,6 @@
-package spinDaWheel;
-
 import java.util.*;
+import cli.Layout;
+import cli.SystemInfo;
 
 class Torus extends SceneObject {
     double R, r;
@@ -44,6 +44,10 @@ public class SpinTorus {
         char[][] screen = new char[HEIGHT][WIDTH];
 
         double rx = 20, rz = 0, ry = 30;
+
+        Layout layout = new Layout(WIDTH * 2, HEIGHT, WIDTH);
+        
+        List<String> INFO = new SystemInfo().getInfo();
 
         engine.clearScreen();
         while(true) {            
@@ -98,12 +102,16 @@ public class SpinTorus {
             }
             
             try {
+                String frame = layout.compose(screen, INFO);
+
                 engine.resetCursor();
-                engine.printScreen(screen);
+
+                System.out.println(frame);
+                // engine.printScreen(screen);
 
                 Thread.sleep(30);
             } catch (Exception e) {
-                System.out.println("Error in rendering the object" + e);
+                System.out.println("Error in rendering the object: " + e);
             }
         }
     }

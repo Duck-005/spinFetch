@@ -1,5 +1,3 @@
-package spinDaWheel;
-
 public class Engine {
     void printScreen(char[][] screen) {
 
