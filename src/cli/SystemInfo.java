@@ -92,7 +92,7 @@ public class SystemInfo {
                 return "Unknown uptime: " + e.getMessage();
             }
         } else if(os.contains("mac")) {
-
+            // TODO: add Uptime support for MACOS
         } else {
             try {
 
@@ -110,7 +110,7 @@ public class SystemInfo {
 
                 long minutes = seconds / 60;
 
-                return days + "d " + hours + "h " + minutes + "m";
+                return "Uptime: " + days + "d " + hours + "h " + minutes + "m";
 
             } catch (Exception e) {
                 return "Unknown uptime";

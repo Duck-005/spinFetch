@@ -6,17 +6,17 @@ public class Layout {
 
     int width;
     int height;
-    int torusWidth;
+    int objWidth;
     int infoWidth;
 
-    public Layout(int width, int height, int torusWidth) {
+    public Layout(int width, int height, int objWidth) {
         this.width = width;
         this.height = height;
-        this.torusWidth = torusWidth;
-        this.infoWidth = width - torusWidth - 3;
+        this.objWidth = objWidth;
+        this.infoWidth = width - objWidth - 3;
     }
 
-    public String compose(char[][] torusFrame, List<String> infoLines) {
+    public String compose(char[][] objFrame, List<String> infoLines) {
         StringBuilder frame = new StringBuilder();
 
         int offset = (height - infoLines.size()) / 2;
@@ -25,13 +25,13 @@ public class Layout {
 
             int rowStart = frame.length();
 
-            if (y < torusFrame.length) {
-                int torusRowLen = torusFrame[y].length;
-                for (int x = 0; x < torusWidth; x++) {
-                    frame.append(x < torusRowLen ? torusFrame[y][x] : ' ');
+            if (y < objFrame.length) {
+                int objRowLen = objFrame[y].length;
+                for (int x = 0; x < objWidth; x++) {
+                    frame.append(x < objRowLen ? objFrame[y][x] : ' ');
                 }
             } else {
-                frame.append(" ".repeat(torusWidth));
+                frame.append(" ".repeat(objWidth));
             }
 
             frame.append("   ");
