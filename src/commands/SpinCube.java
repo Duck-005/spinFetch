@@ -1,8 +1,16 @@
+package commands;
+
 import java.util.*;
+
 import cli.Layout;
 import cli.SystemInfo;
 
-class Cube extends SceneObject {
+import engine.Engine;
+import engine.Constants;
+import engine.Rotation;
+import engine.Vector;
+
+class Cube {
     int length, breadth, height;
 
     Cube(int length, int breadth, int height) {
@@ -13,20 +21,6 @@ class Cube extends SceneObject {
 
     Vector surfacePoint(double x, double y, double z) {
         return new Vector(x, y, z);
-    }
-
-    Vector calculateNormals(Vector p) {
-        double ax = Math.abs(p.x);
-        double ay = Math.abs(p.y);
-        double az = Math.abs(p.z);
-
-        if (ax >= ay && ax >= az)
-            return new Vector(Math.signum(p.x),0,0);
-
-        if (ay >= ax && ay >= az)
-            return new Vector(0,Math.signum(p.y),0);
-
-        return new Vector(0,0,Math.signum(p.z));
     }
 }
 
@@ -81,7 +75,7 @@ public class SpinCube {
         }
     }
 
-    public static void main(String[] args) {
+    public void renderCube() {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.print("\033[?25h");                               // show cursor

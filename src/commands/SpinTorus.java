@@ -1,8 +1,16 @@
+package commands;
+
 import java.util.*;
+
 import cli.Layout;
 import cli.SystemInfo;
 
-class Torus extends SceneObject {
+import engine.Engine;
+import engine.Constants;
+import engine.Rotation;
+import engine.Vector;
+
+class Torus {
     double R, r;
     Torus(double R, double r) {
         this.R = R;
@@ -27,7 +35,7 @@ class Torus extends SceneObject {
 }
 
 public class SpinTorus {
-    public static void main(String[] args) {
+    public void renderTorus() {
 
         Engine engine = new Engine();
         Rotation rotation = new Rotation();
