@@ -190,10 +190,9 @@ java -jar spinFetch.jar <COMMAND>
    ```math
    z' = z
    ```
+## References
 
+1. inspired by Joma on [youtube](https://www.youtube.com/watch?v=sW9npZVpiMI) 
+2. original [blog post](https://www.a1k0n.net/2011/07/20/donut-math.html) by Andy Sloane
 
-
-
-
-
-
+The project is more verbose and easy to read than the impressive original compressed program by Andy Sloane.
