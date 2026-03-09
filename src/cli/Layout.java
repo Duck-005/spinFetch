@@ -16,41 +16,50 @@ public class Layout {
         this.infoWidth = width - objWidth - 3;
     }
 
-    public String compose(char[][] objFrame, List<String> infoLines) {
-        StringBuilder frame = new StringBuilder();
+    public char[][] compose(char[][] objFrame, List<String> infoLines) {
 
-        int offset = (height - infoLines.size()) / 2;
+    char[][] frame = new char[height][width];
 
-        for (int y = 0; y < height; y++) {
+    int offset = (height - infoLines.size()) / 2;
 
-            int rowStart = frame.length();
+    for (int y = 0; y < height; y++) {
 
-            if (y < objFrame.length) {
-                int objRowLen = objFrame[y].length;
-                for (int x = 0; x < objWidth; x++) {
-                    frame.append(x < objRowLen ? objFrame[y][x] : ' ');
-                }
-            } else {
-                frame.append(" ".repeat(objWidth));
+        int x = 0;
+
+        // object area
+        if (y < objFrame.length) {
+            int objRowLen = objFrame[y].length;
+
+            for (; x < objWidth; x++) {
+                frame[y][x] = (x < objRowLen) ? objFrame[y][x] : ' ';
             }
-
-            frame.append("   ");
-
-            if (y >= offset && y < offset + infoLines.size()) {
-                String line = infoLines.get(y - offset);
-                frame.append(line, 0, Math.min(line.length(), infoWidth));
+        } else {
+            for (; x < objWidth; x++) {
+                frame[y][x] = ' ';
             }
-
-            // pad remaining width
-            int rowLen = frame.length() - rowStart;
-            while (rowLen < width) {
-                frame.append(' ');
-                rowLen++;
-            }
-
-            frame.append('\n');
         }
 
-        return frame.toString();
+        for (int i = 0; i < 3; i++) {
+            frame[y][x++] = ' ';
+        }
+
+        // info section
+        if (y >= offset && y < offset + infoLines.size()) {
+
+            String line = infoLines.get(y - offset);
+            int limit = Math.min(line.length(), infoWidth);
+
+            for (int i = 0; i < limit && x < width; i++) {
+                frame[y][x++] = line.charAt(i);
+            }
+        }
+
+        // pad remaining width
+        while (x < width) {
+            frame[y][x++] = ' ';
+        }
     }
+
+    return frame;
+}
 }

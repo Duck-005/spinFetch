@@ -9,6 +9,7 @@ import engine.Engine;
 import engine.Constants;
 import engine.Rotation;
 import engine.Vector;
+import engine.Renderer;
 
 class Torus {
     double R, r;
@@ -60,6 +61,7 @@ public class SpinTorus {
         double rx = 0, rz = 0, ry = 0;
 
         Layout layout = new Layout(WIDTH * 2, HEIGHT, WIDTH);
+        Renderer renderer = new Renderer(WIDTH * 2, HEIGHT);
         
         List<String> INFO = new SystemInfo().getInfo();
 
@@ -118,11 +120,9 @@ public class SpinTorus {
             }
             
             try {
-                String frame = layout.compose(screen, INFO);
+                char[][] frame = layout.compose(screen, INFO);
 
-                engine.resetCursor();
-
-                System.out.print(frame);
+                renderer.draw(frame);
 
                 Thread.sleep(30);
             } catch (Exception e) {

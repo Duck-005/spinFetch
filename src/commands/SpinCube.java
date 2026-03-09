@@ -9,6 +9,7 @@ import engine.Engine;
 import engine.Constants;
 import engine.Rotation;
 import engine.Vector;
+import engine.Renderer;
 
 class Cube {
     int length, breadth, height;
@@ -86,6 +87,7 @@ public class SpinCube {
         Cube cube = new Cube(45, 45, 45);
 
         Layout layout = new Layout(WIDTH * 2, HEIGHT, WIDTH);
+        Renderer renderer = new Renderer(WIDTH, HEIGHT);
         
         List<String> INFO = new SystemInfo().getInfo();
 
@@ -131,11 +133,9 @@ public class SpinCube {
             }
             
             try {
-                String frame = layout.compose(screen, INFO);
+                char[][] frame = layout.compose(screen, INFO);
 
-                engine.resetCursor();
-
-                System.out.print(frame);
+                renderer.draw(frame);
 
                 Thread.sleep(30);
             } catch (Exception e) {
